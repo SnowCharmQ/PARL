@@ -1,0 +1,74 @@
+defaults:
+  - ppo_trainer
+  - optim: fsdp
+  - _self_
+
+algorithm:
+  adv_estimator: grpo
+  use_kl_in_reward: false
+  kl_ctrl:
+    kl_coef: 0
+
+data:
+  train_files: recipe/parl/datasets/reddit_rubrics.parquet
+  val_files: recipe/parl/datasets/val.parquet # not needed
+  train_batch_size: 8
+  max_prompt_length: 10240
+  max_response_length: 2048 
+  filter_overlong_prompts: True
+  filter_overlong_prompts_workers: 64
+  truncation: "error"
+
+actor_rollout_ref:
+  model:
+    path: Qwen/Qwen3-8B
+    use_remove_padding: true
+    enable_gradient_checkpointing: true
+  actor:
+    optim:
+      lr: 1e-5
+      lr_scheduler_type: cosine
+      min_lr_ratio: 0.1
+    ppo_mini_batch_size: 8
+    ppo_micro_batch_size_per_gpu: 5
+    use_kl_loss: true
+    kl_loss_coef: 0.001
+    kl_loss_type: low_var_kl
+    entropy_coeff: 0
+    fsdp_config:
+      param_offload: true
+      optimizer_offload: true
+      model_dtype: bf16
+  rollout:
+    log_prob_micro_batch_size_per_gpu: 8
+    tensor_model_parallel_size: 1
+    name: vllm
+    gpu_memory_utilization: 0.6
+    n: 5
+    max_num_batched_tokens: 12800
+    temperature: 0.6
+    top_p: 0.95
+    top_k: 20
+  ref:
+    log_prob_micro_batch_size_per_gpu: 8
+    fsdp_config:
+      param_offload: true
+      model_dtype: bf16
+
+trainer:
+  critic_warmup: 0
+  logger: ["console", "wandb"]
+  project_name: personalized_baselines
+  experiment_name: reddit_parl_b
+  n_gpus_per_node: 8
+  nnodes: 1
+  save_freq: 152
+  total_epochs: 4
+  val_before_train: false
+
+reward_model:
+  reward_manager: batch
+
+custom_reward_function:
+  path: recipe/parl/parl_rm_b.py
+  name: compute_rubrics_score
