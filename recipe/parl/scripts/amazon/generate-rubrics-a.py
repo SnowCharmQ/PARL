@@ -63,7 +63,7 @@ client_evaluator = AsyncOpenAI(api_key=os.getenv("RUBRICS_API_KEY"), base_url=os
 structured_outputs_params = {"structured_outputs": {"choice": ["yes", "no"]}}
 SEM = asyncio.Semaphore(80)
 
-main_dataset = load_from_disk("recipe/parl/datasets/amazon")
+main_dataset = load_from_disk("../../datasets/amazon")
 
 async def evaluate_score(prompt):
     while True:

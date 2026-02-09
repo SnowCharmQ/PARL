@@ -155,7 +155,7 @@ async def generate_rubrics(sample):
 
 
 async def main():
-    dataset = load_from_disk("recipe/parl/datasets/news")
+    dataset = load_from_disk("../../datasets/news")
     tasks = [generate_rubrics(sample) for sample in dataset]
     results = await tqdm_asyncio.gather(*tasks, desc="Generating rubrics")
 

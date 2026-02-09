@@ -1,11 +1,5 @@
 #!/bin/bash
 
-export RUBRICS_BASE_URL=
-export RUBRICS_API_KEY=
-
-conda create -n parl python=3.11 -y
-conda activate parl
-
 uv pip install gputil
 uv pip install -e .
 uv pip install vllm==0.11.2
