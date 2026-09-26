@@ -24,6 +24,8 @@ METHODS = [
 ]
 
 parser = argparse.ArgumentParser()
+parser.add_argument("--review_dataset", type=str, required=True, help="Hugging Face dataset ID or path for review data.")
+parser.add_argument("--metadata_dataset", type=str, required=True, help="Hugging Face dataset ID or path for item metadata.")
 parser.add_argument("--data_dir", type=str, required=True)
 parser.add_argument("--non_path", type=str, required=True)
 parser.add_argument("--rag_path", type=str, required=True)
@@ -51,23 +53,23 @@ client = AsyncOpenAI(api_key=os.getenv("RUBRICS_API_KEY"), base_url=os.getenv("R
 structured_outputs_params = {"structured_outputs": {"choice": ["yes", "no"]}}
 
 movies_dataset = load_dataset(
-    "SnowCharmQ/DPL-main",
+    args.review_dataset,
     "Movies_and_TV",
     split="test"
 ).map(lambda _: {"category": "Movies_and_TV"})
 books_dataset = load_dataset(
-    "SnowCharmQ/DPL-main",
+    args.review_dataset,
     "Books",
     split="test"
 ).map(lambda _: {"category": "Books"})
 main_dataset = concatenate_datasets([movies_dataset, books_dataset])
 movies_meta_dataset = load_dataset(
-    "SnowCharmQ/DPL-meta",
+    args.metadata_dataset,
     "Movies_and_TV",
     split="full"
 )
 books_meta_dataset = load_dataset(
-    "SnowCharmQ/DPL-meta",
+    args.metadata_dataset,
     "Books",
     split="full"
 )

@@ -133,3 +133,12 @@ outputs
 
 recipe/parl/datasets/*
 bkp/**
+
+# Local credentials and machine-specific settings
+.env.*
+!.env.example
+!.env.*.example
+.netrc
+.pypirc
+*.pem
+*.key

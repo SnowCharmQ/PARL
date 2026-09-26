@@ -99,9 +99,6 @@ if __name__ == "__main__":
     train_dataset.to_parquet(os.path.join(local_save_dir, "train.parquet"))
     test_dataset.to_parquet(os.path.join(local_save_dir, "test.parquet"))
 
-    train_dataset.push_to_hub("SnowCharmQ/gsm8k")
-    test_dataset.push_to_hub("SnowCharmQ/gsm8k")
-
     if hdfs_dir is not None:
         makedirs(hdfs_dir)
 

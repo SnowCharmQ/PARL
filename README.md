@@ -65,7 +65,9 @@ python generate-rubrics-a.py
 To conduct experiments on induced rubrics, please simply run:
 
 ```python
-python eval-test.py --data_dir amazon_parl_a
+python eval-test.py --data_dir amazon_parl_a \
+    --review_dataset "$REVIEW_DATASET" \
+    --metadata_dataset "$METADATA_DATASET"
 ```
 
 ------
